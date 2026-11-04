@@ -1,0 +1,34 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::897822967062:root"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::saas-lab-alb-logs-292960608922/alb-logs/AWSLogs/292960608922/*"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::saas-lab-alb-logs-292960608922/alb-logs/AWSLogs/292960608922/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::saas-lab-alb-logs-292960608922"
+    }
+  ]
+}

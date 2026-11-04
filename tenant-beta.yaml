@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: tenant-beta
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+      tenant: beta
+  template:
+    metadata:
+      labels:
+        app: frontend
+        tenant: beta
+    spec:
+      containers:
+        - name: frontend
+          image: hashicorp/http-echo
+          args:
+            - "-text=beta-frontend-response"
+            - "-listen=:8080"
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: beta-frontend
+  namespace: tenant-beta
+spec:
+  selector:
+    app: frontend
+    tenant: beta
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: tenant-beta
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+      tenant: beta
+  template:
+    metadata:
+      labels:
+        app: api
+        tenant: beta
+    spec:
+      containers:
+        - name: api
+          image: hashicorp/http-echo
+          args:
+            - "-text=beta-api-response"
+            - "-listen=:8080"
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: beta-api
+  namespace: tenant-beta
+spec:
+  selector:
+    app: api
+    tenant: beta
+  ports:
+    - port: 80
+      targetPort: 8080
